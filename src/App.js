@@ -67,8 +67,8 @@ function SampleModal({ modalIsOpen, closeModal, customStyles }) {
       <button onClick={closeModal}>close</button>
       <div>I am a modal</div>
 
-      {images.map((src) => (
-        <img key={src} src={src} alt="text" />
+      {images.map((src, i) => (
+        <img key={i} src={src} alt="text" />
       ))}
     </Modal>
   );
