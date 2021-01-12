@@ -39,7 +39,7 @@ const routes = [
   },
 ];
 
-function SampleModal({ modalIsOpen, closeModal, customStyles }) {
+function SampleModal({ modalIsOpen, closeModal, customStyles, req }) {
   const images = [
     'https://via.placeholder.com/150',
     'https://via.placeholder.com/150',
@@ -53,12 +53,12 @@ function SampleModal({ modalIsOpen, closeModal, customStyles }) {
     'https://via.placeholder.com/150',
   ];
   useEffect(() => {
-    axios.get('https://my-json-server.typicode.com/typicode/demo/posts');
-  }, []);
+    axios.get(req);
+  }, [req]);
 
   return (
     <Modal
-      isOpen={modalIsOpen}
+      isOpen={!!modalIsOpen}
       onRequestClose={closeModal}
       style={customStyles}
       contentLabel="Example Modal"
@@ -76,20 +76,26 @@ function SampleModal({ modalIsOpen, closeModal, customStyles }) {
 
 export default function RouteConfigExample() {
   const [modalIsOpen, setIsOpen] = React.useState(false);
-  function openModal() {
-    setIsOpen(true);
-  }
 
   function closeModal() {
-    setIsOpen(false);
+    setIsOpen(null);
   }
   return (
     <Router>
-      {modalIsOpen && (
+      {modalIsOpen === '1' && (
         <SampleModal
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
           customStyles={customStyles}
+          req="https://my-json-server.typicode.com/typicode/demo/posts"
+        />
+      )}
+      {modalIsOpen === '2' && (
+        <SampleModal
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          customStyles={customStyles}
+          req="https://run.mocky.io/v3/5e24e297-6f6a-4e95-b80b-773a2dbdfa55"
         />
       )}
 
@@ -102,7 +108,12 @@ export default function RouteConfigExample() {
             <Link to="/sandwiches">Sandwiches</Link>
           </li>
 
-          <button onClick={openModal}>Open Modal</button>
+          <button onClick={() => setIsOpen('1')}>
+            Open Modal without mocked request
+          </button>
+          <button onClick={() => setIsOpen('2')}>
+            Open Modal with mocked request
+          </button>
         </ul>
 
         <Switch>
@@ -135,6 +146,10 @@ function Sandwiches() {
 }
 
 function Tacos({ routes }) {
+  useEffect(() => {
+    axios.get('https://run.mocky.io/v3/5e24e297-6f6a-4e95-b80b-773a2dbdfa55');
+  }, []);
+
   return (
     <div>
       <h2>Tacos</h2>
